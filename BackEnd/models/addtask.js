@@ -1,0 +1,41 @@
+import {Schema,model} from "mongoose";
+
+
+const TaskSchema=new Schema({
+    uid:{
+        type:String,
+        required:true,
+        index:true
+    },
+    title:{
+        type:String,
+        required:true
+    },
+    description:{
+        type:String,
+        required:true,
+        minlength:20
+    },
+    location:{
+        type:String,
+        required:true,
+    },
+    start_time:{
+        type:Date,
+        required:true
+    },
+    end_time:{
+        type:Date,
+        required:true
+    },
+    status:{
+        type:Boolean,
+        default:false
+    },
+    picture:{
+        type:String,
+        required:false
+    }
+},{timestamps:true});
+
+export const Task=model('Task',TaskSchema,'Task');
