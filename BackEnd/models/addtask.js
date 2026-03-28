@@ -41,7 +41,8 @@ const TaskSchema=new Schema({
         required:false
     },
     isAccepted:{
-        type:Boolean
+        type:Boolean,
+        default:false
     }
 },{timestamps:true});
 
