@@ -111,7 +111,7 @@ export const login=async (req,res)=>{
             });
         }
         const token = jwt.sign(
-            {uid:exuser.uid,email:exuser.email},
+            {_id:exuser._id,uid:exuser.uid,email:exuser.email},
             process.env.JWT_SECRET,
             {expiresIn:"1d"}
         );

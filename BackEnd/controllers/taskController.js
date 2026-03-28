@@ -1,4 +1,5 @@
 import { Task } from "../models/addtask.js";
+import {nanoid} from "nanoid";
 
 export const addTask = async (req, res) => {
     try {
@@ -12,6 +13,7 @@ export const addTask = async (req, res) => {
 
         const newTask = new Task({
             uid:req.user.uid,
+            tid:"TASK_"+nanoid(8),
             title,
             description,
             location,

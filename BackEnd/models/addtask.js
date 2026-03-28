@@ -7,6 +7,10 @@ const TaskSchema=new Schema({
         required:true,
         index:true
     },
+    tid:{
+        type:String,
+        unique:true
+    },
     title:{
         type:String,
         required:true
@@ -35,6 +39,9 @@ const TaskSchema=new Schema({
     picture:{
         type:String,
         required:false
+    },
+    isAccepted:{
+        type:Boolean
     }
 },{timestamps:true});
 

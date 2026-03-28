@@ -3,6 +3,7 @@ import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
+import reqRoutes from "./routes/requestRoutes.js";
 dotenv.config();
 const port = 8426;
 const app = express();
@@ -22,6 +23,7 @@ app.get("/",(req,res)=>{
 
 app.use("/api/auth",authRoutes);
 app.use("/api/tasks",taskRoutes);
+app.use("/api/requests",reqRoutes);
 
 
 
