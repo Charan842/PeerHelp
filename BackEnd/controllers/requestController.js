@@ -43,3 +43,23 @@ export const OutReq = async(req,res)=>{
     }
     return res.status(200).json(requests);
 };
+
+
+export const acceptrequest = async(req,res)=>{
+    const {rId} = req.body;
+    const request = await Request.findOne({rId});
+    if (!request){
+        return res.status(404).json({message:"not found!"});
+    }
+    const {requestedBy,taskId}=request;
+    const task = await Task.findOneAndUpdate({_id:taskId,isAccepted:false},{isAccepted:true},{new:true});
+    if (!task) {
+        return res.status(400).json({
+            message: "Task already accepted by someone else"
+        });
+    }
+    request.status = "accepted";
+    await request.save();
+    await Request.findManyandUpdate({taskId:taskId,status:"pending"},{status:"rejected"},{new:true});
+    return res.status(201).json({message:`task accept by ${request.requestedBy}`});
+};

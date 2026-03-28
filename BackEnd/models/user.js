@@ -32,6 +32,12 @@ const userSchema = new Schema({
     },
     otpExpires:{
         type:Date
+    },
+    bio:{
+        type:String,
+        minlength:10,
+        trim:true,
+        default:"enter your bio"
     }
 },{timestamps:true});
 

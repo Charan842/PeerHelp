@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import reqRoutes from "./routes/requestRoutes.js";
+import Profile from "./routes/profileRoutes.js";
 dotenv.config();
 const port = 8426;
 const app = express();
@@ -24,6 +25,7 @@ app.get("/",(req,res)=>{
 app.use("/api/auth",authRoutes);
 app.use("/api/tasks",taskRoutes);
 app.use("/api/requests",reqRoutes);
+app.use("/api/settings",Profile);
 
 
 

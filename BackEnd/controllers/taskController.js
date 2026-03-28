@@ -45,7 +45,7 @@ export const addTask = async (req, res) => {
 };
 export const allTasks=async (req,res)=>{
     try{
-        const alltasks=await Task.find();
+        const alltasks=await Task.find({isAccepted:false});
         return res.status(200).json({
             count:alltasks.length,
             tasks:alltasks
