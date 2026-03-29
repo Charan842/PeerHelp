@@ -35,25 +35,13 @@ function Signup() {
             const status = err.response.status;
 
             switch (status) {
-                case 404:
-                    setMessage("User not registered");
-                    break;
-
-                case 401:
-                    setMessage("Invalid password");
-                    break;
-
-                case 403:
-                    setMessage("Verify your email before login");
+                case 400:
+                    setMessage("Email already exists");
                     break;
 
                 case 500:
                     setMessage("Server error");
                     break;
-                case 400:
-                    setMessage("Email already exists");
-                    break;
-
 
                 default:
                     setMessage(err.response.data.message || "Error");
