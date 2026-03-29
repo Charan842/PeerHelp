@@ -129,3 +129,78 @@ export const login=async (req,res)=>{
     };
     
 }
+
+export const passwordChangeV = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email }); // ✅ await added
+        if (!user) {
+            return res.status(404).json({ message: "Email not registered" });
+        }
+
+        const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+        user.otp = otp;
+        user.otpExpires = Date.now() + 5 * 60 * 1000; // 5 mins
+
+        await user.save(); // ✅ important
+
+        await VerifyOTP(email, otp);
+
+        return res.status(200).json({
+            message: "OTP sent successfully"
+        });
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+export const passwordChangeP = async (req, res) => {
+    try {
+        const { email, otp, password } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        // OTP validation
+        if (user.otp !== otp) {
+            return res.status(400).json({
+                message: "Invalid OTP"
+            });
+        }
+
+        if (user.otpExpires < Date.now()) {
+            return res.status(400).json({
+                message: "OTP expired"
+            });
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        user.password = hashedPassword;
+
+        // Clear OTP after use
+        user.otp = null;
+        user.otpExpires = null;
+
+        await user.save();
+
+        return res.status(200).json({
+            message: "Password reset successful"
+        });
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
