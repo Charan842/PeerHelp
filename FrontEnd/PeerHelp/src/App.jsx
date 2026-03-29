@@ -1,9 +1,8 @@
-import React from "react";
 import {BrowserRouter as Router,Routes,Route} from "react-router-dom"; 
 import Login from "../authcomponents/Login.jsx";
 import Signup from "../authcomponents/Signup.jsx";
 import OTPVerification from "../authcomponents/OTPVerification.jsx";
-import Dashboard from "../Dashboard/dashboard.jsx";
+import Dashboard from "../Dashboard/Dashboard.jsx";
 import Feed from "../Dashboard/Feed.jsx";
 import Mytasks from "../Dashboard/Mytasks.jsx";
 import Requests from "../Dashboard/Requests.jsx";

@@ -8,18 +8,9 @@ function Feed() {
 
     const fetchTasks = async () => {
         try {
-            const token = localStorage.getItem("token");
+            const res = await axios.get("http://localhost:8426/api/tasks/feed");
 
-            const res = await axios.get(
-                "http://localhost:8426/api/tasks/feed",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            setData(res.data);
+            setData(res.data.tasks);
             setMessage("");
 
         } catch (err) {

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
     const [message, setMessage] = useState("");
-    const navigate =useNavigate();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,6 +50,10 @@ function Signup() {
                 case 500:
                     setMessage("Server error");
                     break;
+                case 400:
+                    setMessage("Email already exists");
+                    break;
+
 
                 default:
                     setMessage(err.response.data.message || "Error");
@@ -85,7 +89,7 @@ function Signup() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <button type="submit">Login</button>
+                <button type="submit">Signup</button>
             </form>
 
             {message && <p>{message}</p>}

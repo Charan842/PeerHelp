@@ -101,7 +101,7 @@ export const login=async (req,res)=>{
         };
         const isMatch = await bcrypt.compare(password, exuser.password);
         if (!isMatch) {
-            return res.status(500).json({
+            return res.status(401).json({
                 message: "Password is invalid"
             })
         };
