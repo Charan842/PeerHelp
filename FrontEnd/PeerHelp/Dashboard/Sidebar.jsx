@@ -1,14 +1,14 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 function Sidebar() {
   return (
-    <div>
-        <Link to="/dashboard/feed">Feed</Link>
-        <Link to="/dashboard/mytasks">MyTasks</Link>
-        <Link to="/dashboard/requests">Requests</Link>
-        <Link to="/dashboard/myrequests">MyRequests</Link>
-        <Link to="/dashboard/settings">Settings</Link>
-    </div>
+    <nav className="sidebar">
+        <NavLink className={({isActive}) => "sidebar-link" + (isActive ? " active" : "")} to="/dashboard/feed">Feed</NavLink>
+        <NavLink className={({isActive}) => "sidebar-link" + (isActive ? " active" : "")} to="/dashboard/mytasks">My Tasks</NavLink>
+        <NavLink className={({isActive}) => "sidebar-link" + (isActive ? " active" : "")} to="/dashboard/requests">Requests</NavLink>
+        <NavLink className={({isActive}) => "sidebar-link" + (isActive ? " active" : "")} to="/dashboard/myrequests">My Requests</NavLink>
+        <NavLink className={({isActive}) => "sidebar-link" + (isActive ? " active" : "")} to="/dashboard/addtask">Add Task</NavLink>
+        <NavLink className={({isActive}) => "sidebar-link" + (isActive ? " active" : "")} to="/dashboard/settings">Settings</NavLink>
+    </nav>
   )
 }
 

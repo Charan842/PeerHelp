@@ -2,14 +2,45 @@ import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
 
 export const profile=async(req,res)=>{
-    const userid=req.user._id;
-    const user=await User.findOne({_id:userid})
-    if(!user){
-        return res.status(404).json({message:"User not found"});
+    try{
+        const userid=req.user._id;
+        const user=await User.findOne({_id:userid});
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+        const {username,email,phonenumber,bio }=user;
+        return res.status(200).json({username,email,phonenumber,bio });
+    }catch(error){
+        console.log("Error in profile:",error);
+        return res.status(500).json({message:"Server error"});
     }
-    const {username,email,phonenumber,bio }=user;
-    return res.status(200).json({username,email,phonenumber,bio });
 }
+
+export const updateProfile = async (req, res) => {
+    try {
+        const userid = req.user._id;
+        const { username, phonenumber, bio } = req.body;
+
+        const user = await User.findOne({ _id: userid });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (username) user.username = username;
+        if (phonenumber) user.phonenumber = phonenumber;
+        if (bio !== undefined) user.bio = bio;
+
+        await user.save();
+
+        return res.status(200).json({ message: "Profile updated successfully" });
+    } catch (error) {
+        console.log("Error in updateProfile:", error);
+        if (error.name === "ValidationError") {
+            return res.status(400).json({ message: "Invalid data" });
+        }
+        return res.status(500).json({ message: "Server error" });
+    }
+};
 
 export const changePassword = async (req, res) => {
     try {

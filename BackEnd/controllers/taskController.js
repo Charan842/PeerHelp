@@ -1,51 +1,46 @@
 import { Task } from "../models/addtask.js";
 import {nanoid} from "nanoid";
 
+
+
 export const addTask = async (req, res) => {
-    try {
-        if (!req.user?.uid) {
-            return res.status(401).json({
-                message: "Invalid user token"
-            });
-        }
+  try {
+    const { title, description, location, start_time, end_time, status } = req.body;
 
-        const { title, description, location, start_time, end_time, status, picture } = req.body;
+    const picture = req.file?.filename;
+    
+    const uid = req.user.uid;
 
-        const newTask = new Task({
-            uid:req.user.uid,
-            tid:"TASK_"+nanoid(8),
-            title,
-            description,
-            location,
-            start_time,
-            end_time,
-            status,
-            picture
-        });
+    const task = new Task({
+        uid,
+        tid: "TASK_"+
+        nanoid(8),
+      title,
+      description,
+      location,
+      start_time,
+      end_time,
+      status,
+      picture
+    });
 
-        await newTask.save();
+    await task.save();
 
-        return res.status(201).json({
-            message: "Task added successfully"
-        });
+    return res.status(201).json({
+      message: "Task created successfully"
+    });
 
-    } catch (error) {
-        console.log(error);
-
-        if (error.name === "ValidationError") {
-            return res.status(400).json({
-                message: "Invalid task data"
-            });
-        }
-
-        return res.status(500).json({
-            message: "Error in adding Task"
-        });
-    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Server error"
+    });
+  }
 };
 export const allTasks=async (req,res)=>{
     try{
-        const alltasks=await Task.find({isAccepted:false});
+        const userid=req.user.uid;
+        const alltasks=await Task.find({isAccepted:false,uid:{$ne:userid}});
         return res.status(200).json({
             count:alltasks.length,
             tasks:alltasks
@@ -59,6 +54,25 @@ export const allTasks=async (req,res)=>{
         });
     }
 };
+export const deleteTask=async (req,res)=>{
+    try{
+        const {tid} = req.params;
+        const userid = req.user.uid;
+        const task = await Task.findOne({tid, uid:userid});
+        if(!task){
+            return res.status(404).json({message:"Task not found"});
+        }
+        if(task.isAccepted){
+            return res.status(400).json({message:"Cannot delete a task that has already been accepted"});
+        }
+        await Task.deleteOne({tid});
+        return res.status(200).json({message:"Task deleted successfully"});
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({message:"Server error"});
+    }
+};
+
 export const myTasks=async (req,res)=>{
     try{
          if (!req.user?.uid) {

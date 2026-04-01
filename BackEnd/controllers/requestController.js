@@ -9,9 +9,12 @@ export const createRequest =async(req,res) =>{
 
         const task = await Task.findOne({_id:taskId});
         if (!task){
-            return res.json({message:"task not found"})
+            return res.status(404).json({message:"task not found"})
         }
         const userid=await User.findOne({uid:task.uid});
+        if (!userid){
+            return res.status(404).json({message:"Task owner not found"});
+        }
 
         const requ = new Request({
             rId:"REQ_"+nanoid(8),
@@ -35,36 +38,81 @@ export const createRequest =async(req,res) =>{
     }
 };
 
-export const InReq = async(req,res)=>{
-    try{
-        const uid = req.user._id;
+export const InReq = async (req, res) => {
+  try {
+    const uid = req.user._id;
 
-        const requests = await Request.find({requestedTo:uid})
-        if (requests.length===0){
-            return res.status(400).json({message:"no requests"});
+    const requests = await Request.find({ requestedTo: uid })
+      .populate("taskId", "title description location start_time end_time")
+      .populate("requestedBy", "username email");
+
+    return res.status(200).json(requests);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export const OutReq = async (req, res) => {
+  try {
+    const uid = req.user._id;
+
+    const requests = await Request.find({ requestedBy: uid })
+      .populate("taskId", "title description location start_time end_time")
+      .populate("requestedTo", "username email");
+
+    return res.status(200).json(requests);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const cancelrequest = async(req,res)=>{
+    try{
+        const {rId} = req.body;
+        const request = await Request.findOne({rId, requestedBy:req.user._id});
+        if (!request){
+            return res.status(404).json({message:"Request not found"});
         }
-        return res.status(200).json(requests);
+        if(request.status !== "pending"){
+            return res.status(400).json({message:"Only pending requests can be cancelled"});
+        }
+        await Request.deleteOne({rId});
+        return res.status(200).json({message:"Request cancelled"});
     }catch(error){
         console.log(error);
+        if(error.name==="CastError"){
+            return res.status(400).json({message:"Invalid ID format"});
+        }
         return res.status(500).json({message:"Server error"});
     }
 };
 
-
-export const OutReq = async(req,res)=>{
+export const rejectrequest = async(req,res)=>{
     try{
-        const uid = req.user._id;
-        const requests =await Request.find({requestedBy:uid})
-        if (requests.length===0){
-            return res.status(400).json({message:"no requests"});
+        const {rId} = req.body;
+        const request = await Request.findOne({rId});
+        if (!request){
+            return res.status(404).json({message:"Request not found"});
         }
-        return res.status(200).json(requests);
+        if(request.status !== "pending"){
+            return res.status(400).json({message:"Only pending requests can be rejected"});
+        }
+        request.status = "rejected";
+        await request.save();
+        return res.status(200).json({message:"Request rejected"});
     }catch(error){
         console.log(error);
+        if(error.name==="CastError"){
+            return res.status(400).json({message:"Invalid ID format"});
+        }
         return res.status(500).json({message:"Server error"});
     }
 };
-
 
 export const acceptrequest = async(req,res)=>{
     try{
@@ -83,7 +131,7 @@ export const acceptrequest = async(req,res)=>{
         request.status = "accepted";
         await request.save();
         await Request.updateMany({taskId:taskId, status:"pending"}, {$set:{status:"rejected"}});
-        return res.status(201).json({message:`task accept by ${request.requestedBy}`});
+        return res.status(200).json({message:"Request accepted successfully"});
     }catch(error){
         console.log(error);
         if(error.name==="CastError"){

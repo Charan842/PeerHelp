@@ -1,49 +1,50 @@
-import {Schema,model} from "mongoose";
+import { Schema, model } from "mongoose";
 
 
-const TaskSchema=new Schema({
-    uid:{
-        type:String,
-        required:true,
-        index:true
+const TaskSchema = new Schema({
+    uid: {
+        type: String,
+        required: true,
+        index: true
     },
-    tid:{
-        type:String,
-        unique:true
+    tid: {
+        type: String,
+        unique: true
     },
-    title:{
-        type:String,
-        required:true
+    title: {
+        type: String,
+        required: true
     },
-    description:{
-        type:String,
-        required:true,
-        minlength:20
+    description: {
+        type: String,
+        required: true,
+        minlength: 20
     },
-    location:{
-        type:String,
-        required:true,
+    location: {
+        type: String,
+        required: true,
     },
-    start_time:{
-        type:Date,
-        required:true
+    start_time: {
+        type: Date,
+        required: true
     },
-    end_time:{
-        type:Date,
-        required:true
+    end_time: {
+        type: Date,
+        required: true
     },
-    status:{
-        type:Boolean,
-        default:false
+    status: {
+        type: String,
+        enum: ["pending", "completed"],
+        default: "pending"
     },
-    picture:{
-        type:String,
-        required:false
+    picture: {
+        type: String,
+        required: false
     },
-    isAccepted:{
-        type:Boolean,
-        default:false
+    isAccepted: {
+        type: Boolean,
+        default: false
     }
-},{timestamps:true});
+}, { timestamps: true });
 
-export const Task=model('Task',TaskSchema,'Task');
+export const Task = model('Task', TaskSchema, 'Task');

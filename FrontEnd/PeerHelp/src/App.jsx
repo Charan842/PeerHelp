@@ -7,7 +7,11 @@ import Feed from "../Dashboard/Feed.jsx";
 import Mytasks from "../Dashboard/Mytasks.jsx";
 import Requests from "../Dashboard/Requests.jsx";
 import Myrequests from "../Dashboard/Myrequests.jsx";
-import Settings from "../Dashboard/Settings.jsx";
+import Settings from "../profilecomponents/Settings.jsx";
+import Changepassword from "../profilecomponents/Changepassword.jsx";
+import Addtask from "../Dashboard/Addtask.jsx";
+import RequestForm from "../requestcomponents/RequestForm.jsx";
+import ForgotPassword from "../authcomponents/ForgotPassword.jsx";
 function App(){
   return (
     <Router>
@@ -20,9 +24,12 @@ function App(){
           <Route path="mytasks" element={<Mytasks />} />
           <Route path="requests" element={<Requests />} />
           <Route path="myrequests" element={<Myrequests />} />
+          <Route path="addtask" element={<Addtask />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="requestform" element={<RequestForm />} />
         </Route>
-
+        <Route path="/change-password" element={<Changepassword/>}/>
+        <Route path="/forgot-password" element={<ForgotPassword/>}/>
       </Routes>
     </Router>
   );

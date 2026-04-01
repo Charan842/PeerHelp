@@ -3,10 +3,10 @@ import Sidebar from './Sidebar';
 import { Outlet } from 'react-router-dom';
 function Dashboard() {
   return (
-    <div>
+    <div className="dashboard-wrapper">
         <Header/>
         <Sidebar/>
-        <div><Outlet/></div>
+        <div className="main-content"><Outlet/></div>
     </div>
   )
 }

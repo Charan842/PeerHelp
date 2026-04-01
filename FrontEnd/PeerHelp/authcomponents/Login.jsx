@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -14,72 +14,64 @@ function Login() {
         try {
             const res = await axios.post(
                 "http://localhost:8426/api/auth/login",
-                {
-                    email,
-                    password
-                }
+                { email, password }
             );
 
             localStorage.setItem("token", res.data.token);
             setMessage("Login successful");
-            navigate("/dashboard");
+            navigate("/dashboard/feed");
 
         } catch (err) {
-            if (!err.response) {
-                setMessage("Network error");
-                return;
-            }
-
-            const status = err.response.status;
-
-            switch (status) {
-                case 404:
-                    setMessage("User not registered");
-                    break;
-
-                case 401:
-                    setMessage("Invalid password");
-                    break;
-
-                case 403:
-                    setMessage("Verify your email before login");
-                    break;
-
-                case 500:
-                    setMessage("Server error");
-                    break;
-
-                default:
-                    setMessage(err.response.data.message || "Error");
+            if (!err.response) { setMessage("Network error"); return; }
+            switch (err.response.status) {
+                case 404: setMessage("User not registered"); break;
+                case 401: setMessage("Invalid password"); break;
+                case 403: setMessage("Verify your email before login"); break;
+                case 500: setMessage("Server error"); break;
+                default:  setMessage(err.response.data.message || "Error");
             }
         }
     };
 
     return (
-        <div>
-            <h2>Login</h2>
+        <div className="auth-page">
+            <div className="auth-card">
+                <h2 className="auth-title">Sign in</h2>
 
-            <form onSubmit={handleSubmit}>
-                <label>Email</label>
-                <input
-                    type="text"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label className="form-label">Email</label>
+                        <input
+                            className="form-input"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                <label>Password</label>
-                <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                    <div className="form-group">
+                        <label className="form-label">Password</label>
+                        <input
+                            className="form-input"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                <button type="submit">Login</button>
-            </form>
+                    <button className="btn btn-primary btn-full" type="submit">Login</button>
+                </form>
 
-            {message && <p>{message}</p>}
+                {message && <p className="message">{message}</p>}
+
+                <div className="auth-footer">
+                    <button className="link-btn" onClick={() => navigate("/forgot-password")}>Forgot password?</button>
+                    &nbsp;·&nbsp;
+                    <button className="link-btn" onClick={() => navigate("/signup")}>Create account</button>
+                </div>
+            </div>
         </div>
     );
 }
